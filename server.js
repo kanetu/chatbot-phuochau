@@ -40,7 +40,7 @@ app.post('/webhook', function(req, res) {
         if (message.message.text) {
           var text = message.message.text;
           console.log(text); // In tin nhắn người dùng
-          sendMessage(senderId, "Tui là bot đây: " + text);
+          sendMessage(senderId);
         }
       }
     }
@@ -51,7 +51,7 @@ app.post('/webhook', function(req, res) {
 
 
 // Gửi thông tin tới REST API để trả lời
-function sendMessage(senderId, message) {
+function sendMessage(senderId) {
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
     qs: {
@@ -62,12 +62,50 @@ function sendMessage(senderId, message) {
       recipient: {
         id: senderId
       },
-      message: {
-        text: message
-      },
+      "message":{
+      "attachment":{
+        "type":"template",
+        "payload":{
+          "template_type":"button",
+          "text":"Xin chào, bạn muốn hỏi thông tin gì?",
+          "buttons":[
+            {
+              "type":"web_url",
+              "url":"https://chatbox-phuochau.herokuapp.com",
+              "title":"Giá xe bao nhiêu?"
+            },
+            {
+                "type":"postback",
+                "title":"Start Chatting",
+                "payload":"DEVELOPER_DEFINED_PAYLOAD"
+              }  
+          ]
+        }
+      }
+    },
     }
   });
 }
+
+app.post('/question', function(req, res) {
+  var entries = req.body.entry;
+  for (var entry of entries) {
+    var messaging = entry.messaging;
+    for (var message of messaging) {
+      var senderId = message.sender.id;
+      if (message.message) {
+        // If user send text
+        if (message.message.text) {
+          var text = message.message.text;
+          console.log(text); // In tin nhắn người dùng
+          sendMessage(senderId, "Tui là bot đây: " + text);
+        }
+      }
+    }
+  }
+
+  res.status(200).send("OK");
+});
 
 app.set('port', process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 3002);
 app.set('ip', process.env.OPENSHIFT_NODEJS_IP || process.env.IP || "0.0.0.0");
