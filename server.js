@@ -43,15 +43,18 @@ app.post('/webhook', function(req, res) {
       if (message.message) {
         // If user send text
         if (message.message.text) {
-          var text = message.message.text;
+          
+          console.log(text); // In tin nhắn người dùng
+          questionMenu(senderId);
+        }
+        if(message.postback){
+          var text = message.postback.text;
           if( text == arr[0]){
-            sendMessage(senderId,"Giá vé lên TP.HCM: 110k, Giá vé lên TP.HCM: 120k");
+            sendMessage(senderId,"Giá vé lên TP.HCM: 110k, Giá vé lên Bình Dương: 120k");
           }
           if( text == arr[1]){
             sendMessage(senderId," Xe chạy theo tuyến đường Trà Vinh -> Bến Tre -> TP.HCM -> Bình Dương ");
           }
-          console.log(text); // In tin nhắn người dùng
-          questionMenu(senderId);
         }
       }
     }
