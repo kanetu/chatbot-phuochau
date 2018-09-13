@@ -28,6 +28,11 @@ app.get('/webhook', function(req, res) {
   res.send('Error, wrong validation token');
 });
 
+var arr = [
+  'Giá xe bao nhiêu?',
+  'Tuyến đường xe chạy'
+]
+
 // Xử lý khi có người nhắn tin cho bot
 app.post('/webhook', function(req, res) {
   var entries = req.body.entry;
@@ -39,8 +44,14 @@ app.post('/webhook', function(req, res) {
         // If user send text
         if (message.message.text) {
           var text = message.message.text;
+          if( text == arr[0]){
+            sendMessage(senderId,"Giá vé lên TP.HCM: 110k, Giá vé lên TP.HCM: 120k");
+          }
+          if( text == arr[1]){
+            sendMessage(senderId," Xe chạy theo tuyến đường Trà Vinh -> Bến Tre -> TP.HCM -> Bình Dương ");
+          }
           console.log(text); // In tin nhắn người dùng
-          sendMessage(senderId);
+          questionMenu(senderId);
         }
       }
     }
@@ -51,7 +62,7 @@ app.post('/webhook', function(req, res) {
 
 
 // Gửi thông tin tới REST API để trả lời
-function sendMessage(senderId) {
+function questionMenu(senderId) {
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
     qs: {
@@ -70,15 +81,15 @@ function sendMessage(senderId) {
           "text":"Xin chào, bạn muốn hỏi thông tin gì?",
           "buttons":[
             {
-              "type":"web_url",
-              "url":"https://chatbox-phuochau.herokuapp.com",
-              "title":"Giá xe bao nhiêu?"
+              "type":"postback",
+              "title":"Giá xe bao nhiêu?",
+              "payload":"DEVELOPER_DEFINED_PAYLOAD"
             },
             {
-                "type":"postback",
-                "title":"Start Chatting",
-                "payload":"DEVELOPER_DEFINED_PAYLOAD"
-              }  
+              "type":"postback",
+              "title":"Tuyến đường xe chạy",
+              "payload":"DEVELOPER_DEFINED_PAYLOAD"
+            }  
           ]
         }
       }
@@ -87,25 +98,24 @@ function sendMessage(senderId) {
   });
 }
 
-app.post('/question', function(req, res) {
-  var entries = req.body.entry;
-  for (var entry of entries) {
-    var messaging = entry.messaging;
-    for (var message of messaging) {
-      var senderId = message.sender.id;
-      if (message.message) {
-        // If user send text
-        if (message.message.text) {
-          var text = message.message.text;
-          console.log(text); // In tin nhắn người dùng
-          sendMessage(senderId, "Tui là bot đây: " + text);
-        }
-      }
+// Gửi thông tin tới REST API để trả lời
+function sendMessage(senderId, message) {
+  request({
+    url: 'https://graph.facebook.com/v2.6/me/messages',
+    qs: {
+      access_token: "EAAaiUzKwmRsBABT7awVDCfMrHx46H2rAbtmN0WazUNhQhUyapK7BY7sSDAUTDgIEMltGanPC05HPMv9X4h0gvix3kcZAnA0E0oYAOBlMKWtHzgS7Fvfw0cqBWxY1ZBQWtcgEZBdihEJtsoP2jnXsbbRQo2hgkQf63PisZBBlPgZDZD",
+    },
+    method: 'POST',
+    json: {
+      recipient: {
+        id: senderId
+      },
+      message: {
+        text: message
+      },
     }
-  }
-
-  res.status(200).send("OK");
-});
+  });
+}
 
 app.set('port', process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 3002);
 app.set('ip', process.env.OPENSHIFT_NODEJS_IP || process.env.IP || "0.0.0.0");
