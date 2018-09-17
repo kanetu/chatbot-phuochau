@@ -33,6 +33,37 @@ var arr = [
   'Tuyến đường xe chạy'
 ]
 
+
+// Yêu cầu: làm một hàm phát hiện key như trong mảng ans[]
+// - Duyệt qua các ele trong ans và chuỗi s có chứa ele
+// trong mảng thì xuất ra 1 câu thông báo 'detect word'
+// - Chức năng giống LIKE trong truy vấn CSDL
+// vd: 
+// 1. "xin cam on" => detect word
+// 2. "cam on moi nguoi" => detect word
+// Gợi ý: sử dụng 
+var ans = [
+  'cam on',
+  'cảm ơn',
+  'tks',
+]
+
+function detectThanks(s){
+  //code here
+  var i;
+  for (i=0; i < ans.length; i++ ){
+    if(s.indexOf(ans[i]) != -1){
+      console.log(s.indexOf(ans[i]));
+      return true;
+    }
+  }
+  
+  return false;
+}
+
+
+
+
 // Xử lý khi có người nhắn tin cho bot
 app.post('/webhook', function(req, res) {
   var entries = req.body.entry;
@@ -44,12 +75,15 @@ app.post('/webhook', function(req, res) {
       if (message.message) {
         // If user send text
         if (message.message.text) {
-          
-          console.log(text); // In tin nhắn người dùng
-          questionMenu(senderId);
-        }
+          if(detectThanks(message.message.text)){
+            sendMessage(senderId,"Cảm ơn bạn đã liên hệ với chúng tôi.");
+          }else{
+            questionMenu(senderId);
+          }
         
+        }
       }
+
       if(message.postback){
           var text = message.postback.title;
           if( text == arr[0]){
@@ -97,9 +131,11 @@ function questionMenu(senderId) {
             },
             {
             "type":"phone_number",
-            "title":"Nhấn để gọi ngay!",
-            "payload":"+841636037389"
-          }
+            "title":"Gọi đặt vé",
+            "payload":"+84985303222"
+            }
+            
+            
           ]
         }
       }
