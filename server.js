@@ -33,7 +33,6 @@ var arr = [
   'Tuyến đường xe chạy'
 ]
 
-<<<<<<< HEAD
 
 // Yêu cầu: làm một hàm phát hiện key như trong mảng ans[]
 // - Duyệt qua các ele trong ans và chuỗi s có chứa ele
@@ -65,8 +64,6 @@ function detectThanks(s){
 
 
 
-=======
->>>>>>> 5855b6638561db96ff4fcabe90a4fea21c35bb62
 // Xử lý khi có người nhắn tin cho bot
 app.post('/webhook', function(req, res) {
   var entries = req.body.entry;
@@ -78,27 +75,12 @@ app.post('/webhook', function(req, res) {
       if (message.message) {
         // If user send text
         if (message.message.text) {
-<<<<<<< HEAD
           if(detectThanks(message.message.text)){
             sendMessage(senderId,"Cảm ơn bạn đã liên hệ với chúng tôi.");
           }else{
             questionMenu(senderId);
           }
         
-=======
-          
-          console.log(text); // In tin nhắn người dùng
-          questionMenu(senderId);
-        }
-        if(message.postback){
-          var text = message.postback.text;
-          if( text == arr[0]){
-            sendMessage(senderId,"Giá vé lên TP.HCM: 110k, Giá vé lên Bình Dương: 120k");
-          }
-          if( text == arr[1]){
-            sendMessage(senderId," Xe chạy theo tuyến đường Trà Vinh -> Bến Tre -> TP.HCM -> Bình Dương ");
-          }
->>>>>>> 5855b6638561db96ff4fcabe90a4fea21c35bb62
         }
       }
 
@@ -146,18 +128,14 @@ function questionMenu(senderId) {
               "type":"postback",
               "title":"Tuyến đường xe chạy",
               "payload":"DEVELOPER_DEFINED_PAYLOAD"
-<<<<<<< HEAD
             },
             {
             "type":"phone_number",
-            "title":"Gọi đặt vé",
+            "title":"Gọi 0985303222",
             "payload":"+84985303222"
             }
             
             
-=======
-            }  
->>>>>>> 5855b6638561db96ff4fcabe90a4fea21c35bb62
           ]
         }
       }
